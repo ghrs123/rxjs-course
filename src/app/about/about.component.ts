@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { fromEvent, interval, noop, observable, Observable, timer } from "rxjs";
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: "about",
@@ -30,35 +29,7 @@ export class AboutComponent implements OnInit {
     //Promise: já é chamado na hora, faz a ação
     //Observable: só é ativo quando for chamado, faz ação quando for chamado
 
-    const http$ = Observable.create((observable) => {
-      //fetch é um promise, quando a aplicação iniciar o fetch já é chamado
-      fetch("/api/courses")
-        .then((response) => {
 
-          //payload
-          return response.json();
-        })
-        .then((body) => {
-
-          //emit the body in observable
-          observable.next(body);
-
-          observable.complete();
-
-        })
-        .catch((err) => {
-
-          observable.error(err);
-
-        });
-    });
-
-
-    http$.subscribe(
-      courses => console.log(courses),
-      noop, // ou () => {} - como não está se esperar nenhum erro
-      () => console.log("Completed")
-
-    );
   }
 }
+

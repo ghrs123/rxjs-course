@@ -17,14 +17,16 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
   form: FormGroup;
   course: Course;
 
-  @ViewChild("saveButton", { static: true }) saveButton: ElementRef;
+  //@ViewChild("saveButton", { static: true }) saveButton: ElementRef;
+
 
   @ViewChild("searchInput", { static: true }) searchInput: ElementRef;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CourseDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) course: Course
+    @Inject(MAT_DIALOG_DATA) course: Course,
+    private saveButton: ElementRef
   ) {
     this.course = course;
 
@@ -57,7 +59,6 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-
     fromEvent(this.saveButton.nativeElement, 'click')
     .pipe(
       exhaustMap(() => this.saveCourse(this.form.value))

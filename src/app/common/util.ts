@@ -11,9 +11,15 @@ export function createHttpObservable(url:string) {
     //fetch é um promise, quando a aplicação iniciar o fetch já é chamado
     fetch(url, {signal})
       .then((response) => {
+        if(response.ok) {
 
         //payload
         return response.json();
+
+        }
+        else {
+          observable.error("Request failed with status code: " + response.status);
+        }
       })
       .then((body) => {
 

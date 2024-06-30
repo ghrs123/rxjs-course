@@ -1,10 +1,15 @@
+import { signal } from "@angular/core";
 import { Observable } from "rxjs";
 
 export function createHttpObservable(url:string) {
 
   return  Observable.create((observable) => {
+
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     //fetch é um promise, quando a aplicação iniciar o fetch já é chamado
-    fetch(url)
+    fetch(url, {signal})
       .then((response) => {
 
         //payload
@@ -23,6 +28,8 @@ export function createHttpObservable(url:string) {
         observable.error(err);
 
       });
+
+      return () => controller.abort();
   });
 
 }

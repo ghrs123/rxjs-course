@@ -17,7 +17,7 @@ import { searchLessons } from '../../../server/search-lessons.route';
 export class CourseComponent implements OnInit, AfterViewInit {
 
     courseId: string;
-    course$: Observable<Course>;
+    course$: Observable<any>;
     lessons$: Observable<Lesson[]>;
 
 

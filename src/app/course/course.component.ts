@@ -51,10 +51,11 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
 
     loadLessons(search = ''): Observable<Lesson[]> {
-      return  this.lessons$ = createHttpObservable(`/api/lessons?courseId=${this.courseId}&pageSize=100&filter=${search}`)
-      .pipe(
-        map(res => res["payload"])
-      );
+      return createHttpObservable(
+        `/api/lessons?courseId=${this.courseId}&pageSize=100&filter=${search}`)
+        .pipe(
+          map(res => res["payload"])
+        );
     }
 
 

@@ -22,16 +22,15 @@ export class HomeComponent implements OnInit {
       let url:string  = "/api/courses";
       const http$ = createHttpObservable(url);
 
-      const courses$: Observable<any[]> = http$
+      const courses$: Observable<Course[]> = http$
       .pipe(
-
-        tap(() => console.log("HRRP request executed")),
+        tap(() => console.log("HTTP request executed")),
         map( res => Object.values(res["payload"])),
         shareReplay(),
         retryWhen(erros => erros.pipe(
           delayWhen(() => timer(2000))
         ))
-      );
+      ) as Observable<Course[]>;
 
       this.beginnerCourses$ = courses$
       .pipe(

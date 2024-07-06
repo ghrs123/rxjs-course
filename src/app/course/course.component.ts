@@ -43,7 +43,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
         .pipe(
           map(event => event.target.value),
           startWith(''),
-          debounceTime(400), //não duplica os pedidos durante o tempo determinado de 400 ms
+          debounceTime(400), //retorna o valor depois de estar estável(exemplo parar de digitar) durante o tempo determinado de 400 ms
           distinctUntilChanged(), // remove a duplicidade de pedidos iguais
           switchMap( search => this.loadLessons(search))
         );

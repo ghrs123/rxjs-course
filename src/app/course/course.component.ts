@@ -7,6 +7,7 @@ import { createHttpObservable } from '../common/util';
 import { Course } from '../model/course';
 import { Lesson } from '../model/lesson';
 import { searchLessons } from '../../../server/search-lessons.route';
+import { debug, RxJsLoggingLevel, setRxJsLoggingLevel } from '../common/debug';
 
 
 @Component({
@@ -32,7 +33,12 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
         this.courseId = this.route.snapshot.params['id'];
 
-        this.course$ = createHttpObservable(`/api/courses/${this.courseId}`);
+        this.course$ = createHttpObservable(`/api/courses/${this.courseId}`)
+        .pipe(
+          debug(RxJsLoggingLevel.INFO, "course value "),
+        );
+
+        setRxJsLoggingLevel(RxJsLoggingLevel.DEBUG)
 
     }
 
@@ -43,9 +49,11 @@ export class CourseComponent implements OnInit, AfterViewInit {
         .pipe(
           map(event => event.target.value),
           startWith(''),
+          debug(RxJsLoggingLevel.INFO, "search "),
           debounceTime(400), //retorna o valor depois de estar estável(exemplo parar de digitar) durante o tempo determinado de 400 ms
           distinctUntilChanged(), // remove a duplicidade de pedidos iguais
-          switchMap( search => this.loadLessons(search))
+          switchMap( lessons => this.loadLessons(lessons)),
+          debug(RxJsLoggingLevel.DEBUG, "Lessons "),
         );
     }
 

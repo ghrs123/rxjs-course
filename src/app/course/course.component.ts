@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {concat, fromEvent, Observable, scheduled} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, startWith, switchMap} from 'rxjs/operators';
+import {concat, forkJoin, fromEvent, Observable, scheduled} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, startWith, switchMap, tap, throttleTime} from 'rxjs/operators';
 
 import { createHttpObservable } from '../common/util';
 import { Course } from '../model/course';
@@ -33,28 +33,31 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
         this.courseId = this.route.snapshot.params['id'];
 
-        this.course$ = createHttpObservable(`/api/courses/${this.courseId}`)
-        .pipe(
-          debug(RxJsLoggingLevel.INFO, "course value "),
-        );
+        const course$ = createHttpObservable(`/api/courses/${this.courseId}`);
 
-        setRxJsLoggingLevel(RxJsLoggingLevel.DEBUG)
+        const lessons$ = this.loadLessons();
+
+        //Envia um valor só, depois que terminar de completar as duas requisições do courses e lessons
+        forkJoin([course$, lessons$])
+        .pipe(
+          tap(([course$, lessons$]) => {
+            console.log("Course ",course$);
+            console.log("Lessons ",lessons$);
+          })
+        )
+        .subscribe()
+
 
     }
 
     ngAfterViewInit() {
 
-
-      this.lessons$ = fromEvent<any>(this.input.nativeElement, 'keyup')
+       fromEvent<any>(this.input.nativeElement, 'keyup')
         .pipe(
           map(event => event.target.value),
-          startWith(''),
-          debug(RxJsLoggingLevel.INFO, "search "),
-          debounceTime(400), //retorna o valor depois de estar estável(exemplo parar de digitar) durante o tempo determinado de 400 ms
-          distinctUntilChanged(), // remove a duplicidade de pedidos iguais
-          switchMap( lessons => this.loadLessons(lessons)),
-          debug(RxJsLoggingLevel.DEBUG, "Lessons "),
-        );
+          throttleTime(500),
+
+        ).subscribe();
     }
 
 

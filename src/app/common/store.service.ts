@@ -11,7 +11,6 @@ import { BrowserModule } from '@angular/platform-browser';
 })
 export class Store {
 
-
   private subject = new BehaviorSubject<Course[]>([]);
 
   courses$ : Observable<Course[]> = this.subject.asObservable();
@@ -41,6 +40,14 @@ export class Store {
   selectAdvancedCourses(): Observable<Course[]> {
     return this.filterByCategory('ADVANCED');
   }
+
+
+  selectById(courseId: number): Observable<Course> {
+    return this.courses$.pipe(
+       map(courses  => courses.find( course => course.id == courseId))
+     );
+   }
+
 
   filterByCategory(category: string) {
     return this.courses$

@@ -17,12 +17,17 @@ export class AboutComponent implements OnInit {
 
       const series$ = subject.asObservable();
 
-      series$.subscribe(console.log);
+      series$.subscribe(val => console.log("early sub: ", val));
 
       subject.next(1);
       subject.next(2);
       subject.next(3);
-      subject.complete();
+      //subject.complete();
+
+      setTimeout(() => {
+        series$.subscribe(val => console.log("late sub: ", val));
+        subject.next(4);
+      },2000);
 
     }
 
